@@ -10,6 +10,7 @@ $0 [-h -f -v]
 -h : help
 -f : force
 -v : verbose
+-d : dry run
 
 EOF
 
@@ -44,8 +45,10 @@ function backup_file () {
 FORCE=0
 REPLACE=0
 VERBOSE=0
+DRYRUN=0
 
-args=$(getopt hfrv $*)
+
+args=$(getopt hdfrv $*)
 
 set -- $args
 for i; do
@@ -62,9 +65,13 @@ for i; do
 			FORCE=1;
 			shift;;
      -r)
-	echo "setting REPLACE";
-	REPLACE=1;
-	shift;;
+			echo "setting REPLACE";
+			REPLACE=1;
+			shift;;
+		-d)
+			echo "setting DRYRUN";
+			DRYRUN=1;
+			shift;;
 
      --)
   shift; break;;
@@ -103,27 +110,21 @@ for file in $SETTINGSFILES; do
 		[ $FORCE -eq 0 ] && confirm_file "Replace ${file}?"
 
 		# if destionation file exists, backup it
-		test -f "$DESTFILE" && backup_file "$DESTFILE" "${DESTFILE}.bak"
+		[ $DRYRUN -eq 0 ] && test -f "$DESTFILE" && backup_file "$DESTFILE" "${DESTFILE}.bak"
 
-		cat $file | egrep -v "^#--" > $DESTFILE
+		[ $DRYRUN -eq 1 ] && echo "Dryrun: overwriting $DESTFILE with contents of $file"
+		[ $DRYRUN -eq 0 ] && cat $file | egrep -v "^#--" > $DESTFILE
+
 	else
 		[ $VERBOSE -eq 1 ] && echo "merging $file to $DESTFILE"
 
 		[ $FORCE -eq 0 ] && confirm_file "Merge into ${file}?"
 
 		# if destionation file exists, backup it
-		test -f "$DESTFILE" && backup_file "$DESTFILE" "${DESTFILE}.bak"
+		[ $DRYRUN -eq 0 ] && test -f "$DESTFILE" && backup_file "$DESTFILE" "${DESTFILE}.bak"
 
-		cat $file | egrep -v "^#--" >> $DESTFILE
+		[ $DRYRUN -eq 1 ] && echo "Dryrun: adding contents of $file to $DESTFILE"
+		[ $DRYRUN -eq 0 ] && cat $file | egrep -v "^#--" >> $DESTFILE
 	fi
 
 done
-
-
-
-
-
-
-
-
-
