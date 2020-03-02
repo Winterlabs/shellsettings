@@ -48,7 +48,7 @@ VERBOSE=0
 DRYRUN=0
 
 
-args=$(getopt hdfrv $*)
+args=$(getopt hdfrvu: $*)
 
 set -- $args
 for i; do
@@ -72,6 +72,9 @@ for i; do
 			echo "setting DRYRUN";
 			DRYRUN=1;
 			shift;;
+		-u)
+			OVERRIDEUSER=$OPTARG
+			echo "Override user to $OVERRIDEUSER"
 
      --)
   shift; break;;
