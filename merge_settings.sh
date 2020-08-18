@@ -93,7 +93,7 @@ if [ "$1" == "-f" ]; then
 	FORCE=1
 fi
 
-SETTINGSFILES=$(find . -iname ".*" -type f | egrep -v "\.swp|\.gitignore|\.git")
+SETTINGSFILES=$(find . -iname ".*" -type f | egrep -v "\.swp$|\.gitignore$|\.git$")
 
 if [ $FORCE -eq 0 ]; then
 	echo "Going to merge the following files to $HOME"
