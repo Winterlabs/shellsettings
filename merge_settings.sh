@@ -75,6 +75,7 @@ for i; do
 		-u)
 			OVERRIDEUSER=$OPTARG
 			echo "Override user to $OVERRIDEUSER"
+			shift;;
 
      --)
   shift; break;;
